@@ -6,7 +6,6 @@ import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -63,7 +62,7 @@ private object DuolingoButtonDefaults {
  * @param onClick Callback to be invoked when the button is clicked
  */
 @Composable
-fun DuolingoButton(
+fun DuolingoButton2(
     modifier: Modifier = Modifier,
     text: String,
     color: Color = Green,
@@ -231,7 +230,7 @@ private object DecelerateEasing : Easing {
 @Preview(showBackground = false)
 @Composable
 private fun PreviewDuolingoButton() {
-    DuolingoButton(
+    DuolingoButton2(
         text = "Preview",
         onClick = {}
     )

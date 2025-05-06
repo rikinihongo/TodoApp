@@ -21,11 +21,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sonpxp.todoapp.domain.model.Priority
 import com.sonpxp.todoapp.domain.model.Task
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+
+@Preview(showBackground = true)
+@Composable
+fun SimpleTaskItemPreview() {
+    val sampleTask = Task(
+        id = 0,
+        title = "Xin chào",
+        description = "đây là mô tả cho composable",
+        isCompleted = true,
+        createdDate = Date(),
+        dueDate = null,
+        priority = Priority.HIGH
+    )
+    TaskItem(task = sampleTask, onTaskClick = {}, onToggleCompletion = {}, onDeleteTask = {})
+}
+
 
 @Composable
 fun TaskItem(
