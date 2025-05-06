@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2023 The Android Open Source Project
+
+  FontWeight: min: 0, max: 1000
+  Note that fontStyle only has 2 forms: normal and italic
+
+        https://fonts.google.com/specimen/Nunito
+
+  * Created by Sonpx on 12/13/2023
+  * Copyright(©)Cloudxanh. All rights reserved.
+-->
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        app:font="@font/nunito_extralight"
+        app:fontStyle="normal"
+        app:fontWeight="200" />
+    <font
+        app:font="@font/nunito_extralightitalic"
+        app:fontStyle="italic"
+        app:fontWeight="200" />
+
+    <font
+        app:font="@font/nunito_light"
+        app:fontStyle="normal"
+        app:fontWeight="300" />
+    <font
+        app:font="@font/nunito_lightitalic"
+        app:fontStyle="italic"
+        app:fontWeight="300" />
+
+    <font
+        app:font="@font/nunito_regular"
+        app:fontStyle="normal"
+        app:fontWeight="400" />
+    <font
+        app:font="@font/nunito_italic"
+        app:fontStyle="italic"
+        app:fontWeight="400" />
+
+    <font
+        app:font="@font/nunito_medium"
+        app:fontStyle="normal"
+        app:fontWeight="500" />
+    <font
+        app:font="@font/nunito_mediumitalic"
+        app:fontStyle="italic"
+        app:fontWeight="500" />
+
+    <font
+        app:font="@font/nunito_semibold"
+        app:fontStyle="normal"
+        app:fontWeight="600" />
+
+    <font
+        app:font="@font/nunito_semibolditalic"
+        app:fontStyle="italic"
+        app:fontWeight="600" />
+
+    <font
+        app:font="@font/nunito_bold"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+    <font
+        app:font="@font/nunito_bolditalic"
+        app:fontStyle="italic"
+        app:fontWeight="700" />
+
+    <font
+        app:font="@font/nunito_extrabold"
+        app:fontStyle="normal"
+        app:fontWeight="800" />
+    <font
+        app:font="@font/nunito_extrabolditalic"
+        app:fontStyle="italic"
+        app:fontWeight="800" />
+
+    <font
+        app:font="@font/nunito_black"
+        app:fontStyle="normal"
+        app:fontWeight="900" />
+    <font
+        app:font="@font/nunito_blackitalic"
+        app:fontStyle="italic"
+        app:fontWeight="900" />
+
+</font-family>

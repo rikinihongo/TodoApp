@@ -1,4 +1,4 @@
 package com.sonpxp.todoapp.ui.components
 
-class CommonButton {
+class DuolingoButton {
 }
