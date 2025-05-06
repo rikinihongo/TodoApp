@@ -7,6 +7,7 @@ import com.sonpxp.todoapp.domain.usecase.DeleteTaskUseCase
 import com.sonpxp.todoapp.domain.usecase.GetTasksUseCase
 import com.sonpxp.todoapp.domain.usecase.UpdateTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -34,6 +35,7 @@ class TaskListViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
         getTasksUseCase()
             .onEach { tasks ->
+                delay(2000)
                 _state.update {
                     it.copy(
                         tasks = tasks,
