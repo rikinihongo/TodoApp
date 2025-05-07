@@ -35,6 +35,7 @@ class TaskListViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
         getTasksUseCase()
             .onEach { tasks ->
+                // Fake delay api, show loading slow
                 delay(2000)
                 _state.update {
                     it.copy(

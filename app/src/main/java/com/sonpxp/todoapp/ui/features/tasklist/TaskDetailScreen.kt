@@ -1,7 +1,5 @@
 package com.sonpxp.todoapp.ui.features.tasklist
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
@@ -41,10 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sonpxp.todoapp.domain.model.Priority
-import com.sonpxp.todoapp.ui.components.DuolingoButton
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -69,7 +65,7 @@ fun TaskDetailScreen(
                 title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -183,14 +179,14 @@ fun TaskDetailContent(
             onDueDateSelected = onDueDateChange
         )
 
-        DuolingoButton(
+        /*DuolingoButton(
             modifier = Modifier,
             text = "Tiếp tục",
             textSize = 16.sp,
             textAllCaps = true
         ) {
             Log.e("msg", "clicked!")
-        }
+        }*/
     }
 }
 
@@ -226,7 +222,7 @@ fun PrioritySelector(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                Priority.values().forEach { priority ->
+                Priority.entries.forEach { priority ->
                     DropdownMenuItem(
                         text = { Text(priority.name) },
                         onClick = {
