@@ -1,6 +1,8 @@
 package com.sonpxp.todoapp.ui.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,6 +45,8 @@ fun NavGraph(
         modifier = modifier,
         navController = navController,
         startDestination = TaskList,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }
     ) {
         composable<TaskList>(
             enterTransition = {

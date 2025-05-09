@@ -1,6 +1,5 @@
 package com.sonpxp.todoapp.ui.features.tasklist
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,20 +15,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +44,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sonpxp.todoapp.domain.model.Priority
@@ -78,8 +86,7 @@ fun TaskDetailScreen(
                         viewModel.saveTask()
                         onNavigateBack()
                     }
-                },
-                //enabled = state.title.isNotBlank() && !state.isSaving
+                }
             ) {
                 Icon(Icons.Default.Save, contentDescription = "Save Task")
             }
@@ -178,18 +185,10 @@ fun TaskDetailContent(
             dueDate = dueDate,
             onDueDateSelected = onDueDateChange
         )
-
-        /*DuolingoButton(
-            modifier = Modifier,
-            text = "Tiếp tục",
-            textSize = 16.sp,
-            textAllCaps = true
-        ) {
-            Log.e("msg", "clicked!")
-        }*/
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrioritySelector(
     selectedPriority: Priority,
@@ -203,28 +202,50 @@ fun PrioritySelector(
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Box {
-            Row(
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = selectedPriority.name,
+                onValueChange = {},
+                readOnly = true,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = OutlinedTextFieldDefaults.colors( //, TextFieldDefaults
+                    focusedTextColor = when (selectedPriority) {
+                        Priority.LOW -> Color.Green
+                        Priority.MEDIUM -> Color.Magenta
+                        Priority.HIGH -> Color.Red
+                    },
+                    unfocusedTextColor = when (selectedPriority) {
+                        Priority.LOW -> Color.Green
+                        Priority.MEDIUM -> Color.Magenta
+                        Priority.HIGH -> Color.Red
+                    }
+                ),
                 modifier = Modifier
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                     .fillMaxWidth()
-                    .clickable { expanded = true }
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = selectedPriority.name,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-
-            DropdownMenu(
+            )
+            ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
                 Priority.entries.forEach { priority ->
                     DropdownMenuItem(
-                        text = { Text(priority.name) },
+                        text = {
+                            Text(
+                                text = priority.name,
+                                color = when (priority) {
+                                    Priority.LOW -> Color.Green
+                                    Priority.MEDIUM -> Color.Magenta
+                                    Priority.HIGH -> Color.Red
+                                }
+                            )
+                        },
                         onClick = {
                             onPrioritySelected(priority)
                             expanded = false
@@ -236,12 +257,33 @@ fun PrioritySelector(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DueDateSelector(
     dueDate: Date?,
     onDueDateSelected: (Date?) -> Unit
 ) {
-    var showDateOptions by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    val calendar = Calendar.getInstance()
+    dueDate?.let { calendar.time = it }
+
+    // Prepare date options
+    val dateOptions = listOf(
+        "Today" to Date(),
+        "Tomorrow" to Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.time,
+        "Next Week" to Calendar.getInstance().apply { add(Calendar.WEEK_OF_YEAR, 1) }.time,
+        "Pick a Date" to null,
+        "No Due Date" to null
+    )
+    val selectedDateText = dueDate?.let {
+        SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(it)
+    } ?: "No Due Date"
+
+    // Date picker state
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = dueDate?.time ?: System.currentTimeMillis()
+    )
 
     Column {
         Text(
@@ -249,101 +291,72 @@ fun DueDateSelector(
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showDateOptions = true }
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
         ) {
-            Text(
-                text = dueDate?.let {
-                    SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(it)
-                } ?: "No due date",
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Icon(
-                imageVector = Icons.Default.CalendarToday,
-                contentDescription = "Select Due Date"
-            )
-        }
-
-        if (showDateOptions) {
-            DateOptions(
-                dueDate = dueDate,
-                onDueDateSelected = {
-                    onDueDateSelected(it)
-                    showDateOptions = false
+            OutlinedTextField(
+                value = selectedDateText,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "Select Due Date"
+                    )
                 },
-                onDismiss = { showDateOptions = false }
+                modifier = Modifier
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
+                    .fillMaxWidth()
             )
-        }
-    }
-}
-
-@Composable
-fun DateOptions(
-    dueDate: Date?,
-    onDueDateSelected: (Date?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        // Today
-        Button(
-            onClick = {
-                onDueDateSelected(Date())
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Today")
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                dateOptions.forEach { (label, date) ->
+                    DropdownMenuItem(
+                        text = { Text(label) },
+                        onClick = {
+                            if (label == "Pick a Date") {
+                                showDatePicker = true
+                            } else {
+                                onDueDateSelected(date)
+                            }
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
 
-        // Tomorrow
-        Button(
-            onClick = {
-                val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, 1)
-                onDueDateSelected(calendar.time)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Tomorrow")
-        }
-
-        // Next Week
-        Button(
-            onClick = {
-                val calendar = Calendar.getInstance()
-                calendar.add(Calendar.WEEK_OF_YEAR, 1)
-                onDueDateSelected(calendar.time)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Next Week")
-        }
-
-        // No Due Date
-        Button(
-            onClick = {
-                onDueDateSelected(null)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("No Due Date")
-        }
-
-        // Cancel
-        Button(
-            onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Cancel")
+        // Material 3 Date Picker Dialog
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            datePickerState.selectedDateMillis?.let { millis ->
+                                onDueDateSelected(Date(millis))
+                            }
+                            showDatePicker = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(
+                    state = datePickerState,
+//                    title = { Text("Select Due Date") },
+//                    headline = { Text(selectedDateText) },
+                )
+            }
         }
     }
 }
